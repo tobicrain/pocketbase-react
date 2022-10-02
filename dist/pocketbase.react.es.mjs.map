@@ -1,1 +1,0 @@
-{"version":3,"file":"pocketbase.react.es.mjs","sources":["../src/index.ts"],"sourcesContent":["const hello = \"Hello World\";\nconsole.log(hello);"],"names":[],"mappings":"AAAA,IAAM,KAAK,GAAG,aAAa,CAAC;AAC5B,OAAO,CAAC,GAAG,CAAC,KAAK,CAAC"}

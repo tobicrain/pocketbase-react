@@ -1,26 +1,57 @@
 {
-  "name": "pocketbase-react",
+  "name": "@craintek/pocketbase-react",
   "version": "0.0.1",
   "description": "Unofficial React SDK (React, React Native, Expo) for interacting with the PocketBase JS SDK",
-  "main": "index.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && rollup -c",
-    "dev": "rollup -c -w",
-    "test": "env TS_NODE_PROJECT='tsconfig-test.json' mocha 'tests/**/*.spec.ts' --require=ts-node/register",
+    "rollup": "rollup -c",
     "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/craintek/pocketbase-react.git"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/craintek"
+  },
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "~1.17.3",
+    "@reduxjs/toolkit": "^1.8.5",
+    "@rollup/plugin-commonjs": "^22.0.2",
+    "@rollup/plugin-node-resolve": "^14.1.0",
+    "@rollup/plugin-typescript": "^8.5.0",
+    "@types/event-source-polyfill": "^1.0.0",
+    "@types/react": "^18.0.21",
+    "@types/react-native": "~0.69.1",
+    "@types/react-native-event-source": "^1.1.0",
+    "@types/react-redux": "^7.1.24",
+    "@types/redux-persist": "^4.3.1",
+    "@typescript-eslint/eslint-plugin": "^5.38.1",
+    "@typescript-eslint/parser": "^5.38.1",
+    "eslint": "^8.24.0",
+    "eslint-config-universe": "^11.1.0",
+    "event-source": "^0.1.1",
+    "event-source-polyfill": "^1.0.31",
+    "eventsource": "^2.0.2",
+    "pocketbase": "^0.7.0",
+    "react": "^18.2.0",
+    "react-native-event-source": "^1.1.0",
+    "react-redux": "^8.0.4",
+    "redux": "^4.2.0",
+    "redux-persist": "^6.0.0",
+    "redux-thunk": "^2.4.1",
+    "rollup": "^2.79.1",
+    "rollup-plugin-dts": "^4.2.2",
+    "typescript": "~4.3.5"
+  },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^21.0.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.0.0",
-    "rollup": "^2.63.0",
-    "rollup-plugin-terser": "^7.0.0",
-    "rollup-plugin-ts": "^3.0.0",
     "ts-node": "^10.0.0",
+    "tslib": "^2.4.0",
     "typescript": "^4.7.4"
   },
   "author": "Tobias Krainhöfner",
