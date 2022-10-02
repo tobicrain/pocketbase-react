@@ -1,13 +1,13 @@
 import { useContext, useEffect } from 'react';
-import { ContentContext } from '../context/content';
-import { useAppSelector } from '../store';
+import * as store from '../store';
+import { ContentContext } from '../context';
 import Record from '../interfaces/Record';
 
 export function useAppContent<T extends Record>(
   collectionName: string,
   initialFetch: boolean = false
 ) {
-  const records = (useAppSelector((state) => state.reducer.records[collectionName]) ?? []) as T[];
+  const records = (store.useAppSelector((state) => state.reducer.records[collectionName]) ?? []) as T[];
   const context = useContext(ContentContext);
 
   useEffect(() => {

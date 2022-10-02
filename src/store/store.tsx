@@ -1,5 +1,5 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-community/async-storage';
 import { persistStore, persistReducer } from 'redux-persist';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import appReducer from './reducers';
@@ -15,15 +15,17 @@ const reducer = combineReducers({
   reducer: persistReducer(persistConfig, appReducer),
 });
 
-export const store = configureStore({
+const store = configureStore({
   reducer,
   middleware: [thunk],
 });
 
-export type AppDispatch = typeof store.dispatch<RecordAction>;
-export const useAppDispatch = store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+type AppDispatch = typeof store.dispatch<RecordAction>;
+const useAppDispatch = store.dispatch;
+type RootState = ReturnType<typeof store.getState>;
+const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 
-export const persistor = persistStore(store);
+const persistor = persistStore(store);
+
+export { AppDispatch, RootState, useAppDispatch, useAppSelector, store, persistor };

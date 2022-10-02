@@ -1,8 +1,8 @@
+import * as store from '../store/store';
 import * as React from 'react';
 import { createContext, useEffect } from 'react';
 import useClientContext from '../hooks/useClientContext';
 import Record from '../interfaces/Record';
-import { useAppDispatch } from '../store';
 import { recordsAction } from '../store/actions';
 
 interface ContentActions {
@@ -23,7 +23,7 @@ export type ContentProviderProps = {
 
 export const ContentProvider = (props: ContentProviderProps) => {
   const client = useClientContext();
-  const dispatch = useAppDispatch;
+  const dispatch = store.useAppDispatch;
   const [collections, _] = React.useState<string[]>(props.collections || []);
 
   const actions: ContentActions = {
@@ -76,5 +76,7 @@ export const ContentProvider = (props: ContentProviderProps) => {
     return () => actions.unsubscribe();
   }, [collections]);
 
-  return <ContentContext.Provider value={actions}>{props.children}</ContentContext.Provider>;
+  return (
+    <ContentContext.Provider value={actions}>{props.children}</ContentContext.Provider>
+  );
 };

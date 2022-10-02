@@ -8,6 +8,7 @@ const packageJson = require("./package.json");
 export default [
   {
     input: "src/index.ts",
+    external: ["react", "react-dom"],
     output: [
       {
         file: packageJson.main,
@@ -28,6 +29,7 @@ export default [
   },
   {
     input: "dist/esm/index.d.ts",
+    external: ["react", "react-dom"],
     output: [{ file: "dist/index.d.ts", format: "esm" }],
     plugins: [dts()],
   },

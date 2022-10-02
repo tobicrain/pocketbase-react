@@ -1,2 +1,3 @@
-export * from './client';
-export * from './content';
+export * from './Content';
+export * from './Client';
+export * from './Pocketbase';
