@@ -1,14 +1,31 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import AsyncStorage from '@react-native-community/async-storage';
 import { persistStore, persistReducer } from 'redux-persist';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import appReducer from './reducers';
 import thunk from 'redux-thunk';
 import { RecordAction } from './reducers/records';
 
-const persistConfig = {
+interface Storage {
+  getItem(key: string, ...args: Array<any>): any;
+  setItem(key: string, value: any, ...args: Array<any>): any;
+  removeItem(key: string, ...args: Array<any>): any;
+}
+
+const CustomStorage: Storage = {
+  getItem: async (key: string, ...args: Array<any>) => {
+    return {};
+  },
+  setItem: async (key: string, value: any, ...args: Array<any>) => {
+    return {};
+  },
+  removeItem: async (key: string, ...args: Array<any>) => {
+    return {};
+  },
+};
+
+export const persistConfig = {
   key: 'root',
-  storage: AsyncStorage,
+  storage: CustomStorage
 };
 
 const reducer = combineReducers({
