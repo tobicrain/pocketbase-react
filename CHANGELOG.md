@@ -12,3 +12,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Readme Instructions and so on
+- initialCollections now also "subscribe" instead of just "fetch" content once

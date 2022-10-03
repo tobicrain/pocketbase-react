@@ -76,6 +76,7 @@ export const ContentProvider = (props: ContentProviderProps) => {
     if (collections) {
       collections.forEach((collectionName) => {
         actions.fetch(collectionName);
+        actions.subscribe(collectionName);
       });
     }
     return () => actions.unsubscribe();
