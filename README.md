@@ -1,5 +1,7 @@
 PocketBase React SDK
 ======================================================================
+[![Npm package version](https://badgen.net/npm/v/pocketbase-react)](https://npmjs.com/package/pocketbase-react)
+
 Unofficial React SDK (React, React Native, Expo) for interacting with the [PocketBase JS SDK](https://github.com/pocketbase/js-sdk).
 
 
