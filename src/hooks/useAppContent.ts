@@ -14,7 +14,7 @@ export function useAppContent<T extends Record>(
     if (initialFetch) {
       context?.fetch(collectionName);
     }
-  }, [collectionName, initialFetch, context]);
+  }, [collectionName, initialFetch]);
 
   const actions = {
     subscribe: async () => await context?.subscribe(collectionName),
