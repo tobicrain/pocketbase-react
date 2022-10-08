@@ -1,9 +1,10 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
-import appReducer from './reducers';
+import { appReducer } from './reducers';
 import thunk from 'redux-thunk';
 import { RecordAction } from './reducers/records';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Storage {
   getItem(key: string, ...args: Array<any>): any;
@@ -11,15 +12,33 @@ interface Storage {
   removeItem(key: string, ...args: Array<any>): any;
 }
 
+
 const CustomStorage: Storage = {
   getItem: async (_key: string, ..._args: Array<any>) => {
-    return {};
+    if (typeof document !== 'undefined') {
+      console.log("I'm on the web!")
+      return localStorage.getItem(_key);
+    }
+    else if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
+      console.log("I'm in react-native")
+      return await AsyncStorage.getItem(_key);
+    }
   },
   setItem: async (_key: string, _value: any, ..._args: Array<any>) => {
-    return {};
+    if (typeof document !== 'undefined') {
+      return localStorage.setItem(_key, _value);
+    }
+    else if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
+      return await AsyncStorage.setItem(_key, _value);
+    }
   },
   removeItem: async (_key: string, ..._args: Array<any>) => {
-    return {};
+    if (typeof document !== 'undefined') {
+      return localStorage.removeItem(_key);
+    }
+    else if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
+      return await AsyncStorage.removeItem(_key);
+    }
   },
 };
 

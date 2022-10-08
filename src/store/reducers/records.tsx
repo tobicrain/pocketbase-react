@@ -1,4 +1,4 @@
-import Record from '../../interfaces/Record';
+import { Record } from '../../interfaces/Record';
 import * as ReduxType from '../types';
 
 export interface ReduxRecord {
@@ -36,7 +36,7 @@ function deleteRecords(recordsToDelete: Record[], records: Record[]): Record[] {
   return records.filter((r) => !recordsToDelete.includes(r));
 }
 
-export default (state: ReduxRecord = {}, action: RecordAction) => {
+export const records = (state: ReduxRecord = {}, action: RecordAction) => {
   const list = state[action.key] ?? [];
 
   switch (action.type) {

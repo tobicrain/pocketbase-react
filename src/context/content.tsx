@@ -1,8 +1,8 @@
 import * as store from '../store/store';
 import * as React from 'react';
 import { createContext, useEffect } from 'react';
-import useClientContext from '../hooks/useClientContext';
-import Record from '../interfaces/Record';
+import { useClientContext } from '../hooks/useClientContext';
+import { Record } from '../interfaces/Record';
 import { recordsAction } from '../store/actions';
 
 interface ContentActions {

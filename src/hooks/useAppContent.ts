@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react';
 import * as store from '../store';
 import { ContentContext } from '../context';
-import Record from '../interfaces/Record';
+import { Record } from '../interfaces/Record';
 
 export function useAppContent<T extends Record>(
   collectionName: string,

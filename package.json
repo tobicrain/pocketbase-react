@@ -1,19 +1,7 @@
 {
   "name": "pocketbase-react",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Unofficial React SDK (React, React Native, Expo) for interacting with the PocketBase JS SDK",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "files": [
-    "dist"
-  ],
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "rm -rf dist && rollup -c",
-    "dev": "rollup -c -w",
-    "rollup": "rollup -c",
-    "prepublishOnly": "npm run build"
-  },
   "keywords": [
     "pocketbase",
     "react",
@@ -24,38 +12,112 @@
     "typescript",
     "javascript-sdk"
   ],
+  "license": "MIT",
+  "author": "Tobias Krainhöfner",
+  "homepage": "https://github.com/tobicrain/pocketbase-react#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tobicrain/pocketbase-react.git"
   },
-  "devDependencies": {
-    "@babel/core": "^7.19.3",
-    "@react-native-async-storage/async-storage": "^1.17.10",
-    "@reduxjs/toolkit": "^1.8.5",
-    "@rollup/plugin-babel": "^5.3.1",
-    "@rollup/plugin-commonjs": "^22.0.2",
-    "@rollup/plugin-node-resolve": "^14.1.0",
-    "@rollup/plugin-typescript": "^8.5.0",
-    "node-localstorage": "^2.2.1",
-    "react-redux": "^8.0.4",
-    "redux": "^4.2.0",
-    "redux-persist": "^6.0.0",
-    "rollup": "^2.79.1",
-    "rollup-plugin-dts": "^4.2.2",
-    "tslib": "^2.4.0",
-    "typescript": "^4.8.4"
-  },
-  "peerDependencies": {
-    "pocketbase": "^0.7.1",
-    "react": "^16.12.0"
-  },
-  "dependencies": {
-    "pocketbase": "^0.7.1"
-  },
-  "author": "Tobias Krainhöfner",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/tobicrain/pocketbase-react/issues"
   },
-  "homepage": "https://github.com/tobicrain/pocketbase-react#readme"
+  "main": "./lib/index.js",
+  "types": "./types/index.d.ts",
+  "unpkg": "dist/pocketbase-react.js",
+  "module": "es/index.js",
+  "files": [
+    "dist",
+    "lib",
+    "src",
+    "es"
+  ],
+  "scripts": {
+    "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --extensions \".js,.ts,.tsx\" --out-dir lib",
+    "build:es": "babel src --extensions \".js,.ts,.tsx\" --out-dir es",
+    "build:umd": "cross-env NODE_ENV=development rollup -c -o dist/pocketbase-react.js",
+    "build:umd:min": "cross-env NODE_ENV=production rollup -c -o dist/pocketbase-react.min.js",
+    "build:types": "tsc",
+    "build": "yarn build:types && yarn build:commonjs && yarn build:es && yarn build:umd && yarn build:umd:min",
+    "clean": "rimraf lib dist es coverage",
+    "dev": "rollup -c -w",
+    "rollup": "rollup -c",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3",
+    "@babel/plugin-proposal-decorators": "^7.12.1",
+    "@babel/plugin-proposal-object-rest-spread": "^7.12.1",
+    "@babel/plugin-transform-react-display-name": "^7.12.1",
+    "@babel/plugin-transform-react-jsx": "^7.12.1",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-typescript": "^7.14.5",
+    "@microsoft/api-extractor": "^7.18.1",
+
+    "@rollup/plugin-babel": "^5.2.1",
+    "@rollup/plugin-commonjs": "^15.1.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "@rollup/plugin-replace": "^2.3.3",
+    "@testing-library/jest-dom": "^5.11.5",
+    "@testing-library/jest-native": "^3.4.3",
+    "@testing-library/react": "13.0.0",
+    "@testing-library/react-12": "npm:@testing-library/react@^12",
+    "@testing-library/react-hooks": "^3.4.2",
+    "@testing-library/react-native": "^7.1.0",
+    "@types/object-assign": "^4.0.30",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/react-is": "^17",
+    "@types/react-native": "^0.67.4",
+    "@typescript-eslint/eslint-plugin": "^4.28.0",
+    "@typescript-eslint/parser": "^4.28.0",
+    "babel-eslint": "^10.1.0",
+    "babel-jest": "^26.6.1",
+    "codecov": "^3.8.0",
+
+    "eslint": "^7.12.0",
+    "eslint-config-prettier": "^6.14.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.21.5",
+    "glob": "^7.1.6",
+    "jest": "^26.6.1",
+    "prettier": "^2.1.2",
+    "react": "18.0.0",
+    "react-17": "npm:react@^17",
+    "react-dom": "18.0.0",
+    "react-dom-17": "npm:react-dom@^17",
+    "react-native": "^0.64.1",
+    "react-test-renderer": "18.0.0",
+    "react-test-renderer-17": "npm:react-test-renderer@^17",
+    "cross-env": "^7.0.3",
+    "rollup": "^2.32.1",
+    "rollup-plugin-terser": "^7.0.2",
+    "rimraf": "^3.0.2",
+    "ts-jest": "26.5.6",
+    "typescript": "^4.3.4"
+
+  },
+  "peerDependencies": {
+    "pocketbase": "^0.7.1",
+    "react": "^16.12.0",
+    "@react-native-async-storage/async-storage": "^1.17.10",
+    "@reduxjs/toolkit": "^1.8.5",
+    "node-localstorage": "^2.2.1",
+    "react-redux": "^8.0.4",
+    "redux": "^4.2.0",
+    "redux-persist": "^6.0.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.12.1",
+    "pocketbase": "^0.7.1",
+    "@react-native-async-storage/async-storage": "^1.17.10",
+    "@reduxjs/toolkit": "^1.8.5",
+    "node-localstorage": "^2.2.1",
+    "react-redux": "^8.0.4",
+    "redux": "^4.2.0",
+    "redux-persist": "^6.0.0"
+  }
 }

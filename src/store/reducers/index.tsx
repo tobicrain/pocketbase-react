@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
-import records from './records';
+import { records } from './records';
 
-const appReducer = combineReducers({
+export const appReducer = combineReducers({
   records: records,
 });
 
@@ -10,5 +10,3 @@ interface AppReducer {
 }
 
 export type State = AppReducer;
-
-export default appReducer;

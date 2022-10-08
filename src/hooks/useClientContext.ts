@@ -1,8 +1,11 @@
 import { useContext } from 'react';
 import { ClientContext } from '../context';
 
-export default () => {
+const useClientContext = () => {
   const context = useContext(ClientContext);
 
   return context;
 };
+
+
+export { useClientContext };

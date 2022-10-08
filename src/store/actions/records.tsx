@@ -1,4 +1,4 @@
-import Record from '../../interfaces/Record';
+import { Record } from '../../interfaces/Record';
 import { RecordAction } from '../reducers/records';
 import * as ReduxType from '../types';
 
@@ -44,7 +44,7 @@ const updateRecord = (key: string, payload: Record) =>
     payload,
   } as RecordAction);
 
-export default {
+export {
   setRecords,
   addRecord,
   addRecords,

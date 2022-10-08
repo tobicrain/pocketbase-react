@@ -1,6 +1,7 @@
 node_modules
 dist
-
+es
+lib
 .DS_Store
 
 # Although npm recommends adding it to the source, this really should be
