@@ -3,6 +3,7 @@ dist
 es
 lib
 .DS_Store
+**/*.lock
 
 # Although npm recommends adding it to the source, this really should be
 # done only for top-level packages (aka. applications, not libraries).

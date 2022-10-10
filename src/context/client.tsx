@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { createContext } from 'react';
-import PocketBase from 'pocketbase';
+import { getPocketbase } from '../utils/Pocketbase';
 
-export const ClientContext = createContext<PocketBase | null>(null);
+const PocketBase = getPocketbase();
+
+export const ClientContext = createContext<typeof PocketBase | null>(null);
 
 export type ClientProviderProps = {
   children: React.ReactNode;
-  client: PocketBase;
+  client: typeof PocketBase;
 };
 
 export const ClientProvider = (props: ClientProviderProps) => {

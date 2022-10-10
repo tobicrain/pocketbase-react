@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { createContext, useEffect } from 'react';
-import PocketBase from 'pocketbase';
+import { getPocketbase }  from '../utils/Pocketbase';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import * as store from '../store/store';
 import { ClientProvider } from './client';
 import { ContentProvider } from './content';
 
-export const PocketbaseContext = createContext<PocketBase | null>(null);
+const PocketBase = getPocketbase();
+
+export const PocketbaseContext = createContext<typeof PocketBase | null>(null);
 
 export type PocketbaseProviderProps = {
   children: React.ReactNode;
@@ -20,7 +22,7 @@ export type PocketbaseProviderProps = {
 };
 
 export const Pocketbase = (props: PocketbaseProviderProps) => {
-  const [client, setClient] = React.useState<PocketBase | null>(null);
+  const [client, setClient] = React.useState<typeof PocketBase | null>(null);
   useEffect(() => {
     const client = new PocketBase(props.serverURL);
     client.admins.authViaEmail(props.credentials.username, props.credentials.password).then(() => {

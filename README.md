@@ -13,7 +13,7 @@ Unofficial React SDK (React, React Native, Expo) for interacting with the [Pocke
 
 ## Installation
 
-### React Native or Expo
+### React, React Native or Expo
 
 
 ```sh
@@ -28,7 +28,7 @@ import { Pocketbase } from 'pocketbase-react';
 ```
 
 ---
-> 🔧 React Native doesn't have native `EventSource` implementation, so in order to use the realtime service you'll need to load a `EventSource` polyfill.
+> 🔧 React Native / Expo doesn't have native `EventSource` implementation, so in order to use the realtime service you'll need to load a `EventSource` polyfill.
 > I recommend [EventSource/eventsource](https://github.com/EventSource/eventsource)
 > ```sh
 > # Using npm
@@ -48,9 +48,7 @@ import { Pocketbase } from 'pocketbase-react';
 ```tsx
 // App.tsx
 import { Pocketbase } from 'pocketbase-react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const storage = AsyncStorage
 const serverURL = "YOUR_SERVER_URL"
 const collections = ['COLLECTION_NAME_01', 'COLLECTION_NAME_02']
 const credentials = {
@@ -59,7 +57,6 @@ const credentials = {
 }
 
 <Pocketbase
-    storage={storage}
     serverURL={serverURL}
     initialCollections={collections}
     credentials={credentials}>
