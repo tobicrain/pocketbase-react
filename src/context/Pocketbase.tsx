@@ -25,7 +25,6 @@ export const Pocketbase = (props: PocketbaseProviderProps) => {
     const client = new PocketBase(props.serverURL);
     client.admins.authViaEmail(props.credentials.username, props.credentials.password).then(() => {
       setClient(client);
-      console.log('Pocketbase client initialized');
     });
   }, [props.serverURL]);
 

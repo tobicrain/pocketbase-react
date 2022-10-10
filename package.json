@@ -1,6 +1,6 @@
 {
   "name": "pocketbase-react",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Unofficial React SDK (React, React Native, Expo) for interacting with the PocketBase JS SDK",
   "keywords": [
     "pocketbase",
@@ -22,8 +22,8 @@
   "bugs": {
     "url": "https://github.com/tobicrain/pocketbase-react/issues"
   },
-  "main": "./lib/index.js",
-  "types": "./types/index.d.ts",
+  "main": "lib/index.js",
+  "types": "es/index.d.ts",
   "unpkg": "dist/pocketbase-react.js",
   "module": "es/index.js",
   "files": [

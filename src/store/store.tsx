@@ -16,11 +16,9 @@ interface Storage {
 const CustomStorage: Storage = {
   getItem: async (_key: string, ..._args: Array<any>) => {
     if (typeof document !== 'undefined') {
-      console.log("I'm on the web!")
       return localStorage.getItem(_key);
     }
     else if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
-      console.log("I'm in react-native")
       return await AsyncStorage.getItem(_key);
     }
   },
