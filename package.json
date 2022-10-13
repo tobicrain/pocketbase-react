@@ -1,6 +1,6 @@
 {
-  "name": "pocketbase-reactjs",
-  "version": "0.2.701",
+  "name": "pocketbase-react",
+  "version": "0.1.6",
   "description": "Unofficial React SDK (React, React Native, Expo) for interacting with the PocketBase JS SDK",
   "keywords": [
     "pocketbase",
@@ -14,17 +14,17 @@
   ],
   "license": "MIT",
   "author": "Tobias Krainhöfner",
-  "homepage": "https://github.com/tobicrain/pocketbase-reactjs#readme",
+  "homepage": "https://github.com/tobicrain/pocketbase-react#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tobicrain/pocketbase-reactjs.git"
+    "url": "git+https://github.com/tobicrain/pocketbase-react.git"
   },
   "bugs": {
-    "url": "https://github.com/tobicrain/pocketbase-reactjs/issues"
+    "url": "https://github.com/tobicrain/pocketbase-react/issues"
   },
   "main": "lib/index.js",
   "types": "es/index.d.ts",
-  "unpkg": "dist/pocketbase-reactjs.js",
+  "unpkg": "dist/pocketbase-react.js",
   "module": "es/index.js",
   "files": [
     "dist",
@@ -35,8 +35,8 @@
   "scripts": {
     "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --extensions \".js,.ts,.tsx\" --out-dir lib",
     "build:es": "babel src --extensions \".js,.ts,.tsx\" --out-dir es",
-    "build:umd": "cross-env NODE_ENV=development rollup -c -o dist/pocketbase-reactjs.js",
-    "build:umd:min": "cross-env NODE_ENV=production rollup -c -o dist/pocketbase-reactjs.min.js",
+    "build:umd": "cross-env NODE_ENV=development rollup -c -o dist/pocketbase-react.js",
+    "build:umd:min": "cross-env NODE_ENV=production rollup -c -o dist/pocketbase-react.min.js",
     "build:types": "tsc",
     "build": "yarn build:types && yarn build:commonjs && yarn build:es && yarn build:umd && yarn build:umd:min",
     "clean": "rimraf lib dist es coverage",

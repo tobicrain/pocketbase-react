@@ -5,13 +5,20 @@ import { useClientContext } from '../hooks/useClientContext';
 import { Record } from '../interfaces/Record';
 import { recordsAction } from '../store/actions';
 
+export type SubscribeType = (collectionName: string) => Promise<void>;
+export type UnsubscribeType = (collectionName?: string) => void;
+export type FetchType = (collectionName: string) => Promise<void>;
+export type CreateType = (collectionName: string, record: {}) => Promise<void>;
+export type UpdateType = (collectionName: string, recordId: string, record: {}) => Promise<void>;
+export type DeleteType = (collectionName: string, recordId: string) => Promise<void>;
+
 interface ContentActions {
-  subscribe: (collectionName: string) => Promise<void>;
-  unsubscribe: (collectionName?: string) => void;
-  fetch: (collectionName: string) => Promise<void>;
-  create: (collectionName: string, record: {}) => Promise<void>;
-  update: (collectionName: string, recordId: string, record: {}) => Promise<void>;
-  delete: (collectionName: string, recordId: string) => Promise<void>;
+  subscribe: SubscribeType;
+  unsubscribe: UnsubscribeType;
+  fetch: FetchType;
+  create: CreateType;
+  update: UpdateType;
+  delete: DeleteType;
 }
 
 export const ContentContext = createContext<ContentActions | null>(null);
