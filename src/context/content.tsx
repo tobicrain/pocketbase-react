@@ -5,12 +5,12 @@ import { useClientContext } from '../hooks/useClientContext';
 import { Record } from '../interfaces/Record';
 import { recordsAction } from '../store/actions';
 
-export type SubscribeType = (collectionName: string) => Promise<void>;
-export type UnsubscribeType = (collectionName?: string) => void;
-export type FetchType = (collectionName: string) => Promise<void>;
-export type CreateType = (collectionName: string, record: {}) => Promise<void>;
-export type UpdateType = (collectionName: string, recordId: string, record: {}) => Promise<void>;
-export type DeleteType = (collectionName: string, recordId: string) => Promise<void>;
+type SubscribeType = (collectionName: string) => Promise<void>;
+type UnsubscribeType = (collectionName?: string) => void;
+type FetchType = (collectionName: string) => Promise<void>;
+type CreateType = (collectionName: string, record: {}) => Promise<void>;
+type UpdateType = (collectionName: string, recordId: string, record: {}) => Promise<void>;
+type DeleteType = (collectionName: string, recordId: string) => Promise<void>;
 
 interface ContentActions {
   subscribe: SubscribeType;
