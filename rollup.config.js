@@ -17,7 +17,7 @@ const config = {
     name: 'PocketbaseReact',
     globals: {
       react: 'React',
-      pocketbase: 'Pocketbase'
+      pocketbase: '@tobicrain/pocketbase'
     },
   },
   plugins: [

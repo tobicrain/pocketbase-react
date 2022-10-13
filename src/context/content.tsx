@@ -40,7 +40,6 @@ export const ContentProvider = (props: ContentProviderProps) => {
 
   const actions: ContentActions = {
     subscribe: async (collectionName: string) => {
-      // save local that collectionName should be subscribed
       await client?.realtime.subscribe(collectionName, (event: MessageData) => {
         switch (event.action) {
           case 'create':
@@ -55,27 +54,27 @@ export const ContentProvider = (props: ContentProviderProps) => {
           default:
             break;
         }
-      });
+      }).catch((_error) => {});
     },
     unsubscribe: (collectionName?: string) => {
       if (collectionName) {
-        client?.realtime.unsubscribe(collectionName);
+        client?.realtime.unsubscribe(collectionName).catch((_error) => {});;
       } else {
-        client?.realtime.unsubscribe();
+        client?.realtime.unsubscribe().catch((_error) => {});;
       }
     },
     fetch: async (collectionName: string) => {
-      const records = await client?.records.getFullList(collectionName, 200);
+      const records = await client?.records.getFullList(collectionName, 200).catch((_error) => {});
       dispatch(recordsAction.setRecords(collectionName, records as Record[]));
     },
     create: async (collectionName: string, record: {}) => {
-      await client?.records.create(collectionName, record);
+      await client?.records.create(collectionName, record).catch((_error) => {});
     },
     update: async (collectionName: string, recordId: string, record: {}) => {
-      await client?.records.update(collectionName, recordId, record);
+      await client?.records.update(collectionName, recordId, record).catch((_error) => {});
     },
     delete: async (collectionName: string, recordId: string) => {
-      await client?.records.delete(collectionName, recordId);
+      await client?.records.delete(collectionName, recordId).catch((_error) => {});
     },
   };
 
