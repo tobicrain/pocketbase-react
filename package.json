@@ -1,6 +1,6 @@
 {
   "name": "pocketbase-reactjs",
-  "version": "0.2.7",
+  "version": "0.2.701",
   "description": "Unofficial React SDK (React, React Native, Expo) for interacting with the PocketBase JS SDK",
   "keywords": [
     "pocketbase",
@@ -45,7 +45,7 @@
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
-    "pocketbase": "^0.7.1"
+    "pocketbase": "^0.7.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",
