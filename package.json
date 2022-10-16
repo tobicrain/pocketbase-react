@@ -1,6 +1,6 @@
 {
   "name": "pocketbase-reactjs",
-  "version": "0.2.901",
+  "version": "0.3.0",
   "description": "Unofficial React SDK (React, React Native, Expo) for interacting with the PocketBase JS SDK",
   "keywords": [
     "pocketbase",
