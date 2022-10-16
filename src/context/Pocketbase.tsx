@@ -6,35 +6,30 @@ import { PersistGate } from 'redux-persist/integration/react';
 import * as store from '../store/store';
 import { ClientProvider } from './client';
 import { ContentProvider } from './content';
+import { AuthProvider } from './auth';
 
 export const PocketbaseContext = createContext<PocketBase | null>(null);
 
 export type PocketbaseProviderProps = {
   children: React.ReactNode;
   serverURL: string;
-  credentials: {
-    username: string;
-    password: string;
-  };
+  redirectURL: string;
+  openURL: (url: string) => Promise<void>;
   initialCollections?: string[];
 };
 
 export const Pocketbase = (props: PocketbaseProviderProps) => {
-  const [client, setClient] = React.useState<PocketBase | null>(null);
-  useEffect(() => {
-    const client = new PocketBase(props.serverURL);
-    client.admins.authViaEmail(props.credentials.username, props.credentials.password).then(() => {
-      setClient(client);
-    });
-  }, [props.serverURL]);
+  const client = new PocketBase(props.serverURL);
 
   return client ? (
     <ClientProvider client={client}>
       <Provider store={store.store}>
         <PersistGate persistor={store.persistor}>
-          <ContentProvider collections={props.initialCollections}>
-            {props.children}
-          </ContentProvider>
+          <AuthProvider redirectUrl={props.redirectURL} openURL={props.openURL} >
+            <ContentProvider collections={props.initialCollections}>
+              {props.children}
+            </ContentProvider>
+          </AuthProvider>
         </PersistGate>
       </Provider>
     </ClientProvider>

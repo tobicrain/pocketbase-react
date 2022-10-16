@@ -24,7 +24,7 @@ npm install pocketbase-react  --save
 yarn add pocketbase-react
 ```
 ```tsx
-import { Pocketbase } from 'pocketbase-react';
+import { Pocketbase } from 'pocketbase-reactjs';
 ```
 
 ---
@@ -47,7 +47,7 @@ import { Pocketbase } from 'pocketbase-react';
 
 ```tsx
 // App.tsx
-import { Pocketbase } from 'pocketbase-react';
+import { Pocketbase } from 'pocketbase-reactjs';
 
 const serverURL = "YOUR_SERVER_URL"
 const collections = ['COLLECTION_NAME_01', 'COLLECTION_NAME_02']
@@ -66,7 +66,7 @@ const credentials = {
 
 ## Caveats
 ```tsx
-import { useAppContent } = "pocketbase-react";
+import { useAppContent } = "pocketbase-reactjs";
 ```
 ### Records
 Reading the records value directly accesses the Redux Store.
