@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Admin, User } from '@tobicrain/pocketbase';
 import * as React from 'react';
 import { createContext, useEffect } from 'react';
 import { useClientContext } from '../hooks/useClientContext';
@@ -36,8 +37,13 @@ export interface AuthActions {
   updateEmail: UpdateEmailType;
   deleteUser: DeleteUserType;
 }
+export interface AuthContextInterface {
+  actions: AuthActions;
+  isSignedIn: boolean;
+  user: User | Admin | null;
+}
 
-export const AuthContext = createContext<AuthActions>({} as AuthActions);
+export const AuthContext = createContext<AuthContextInterface>({} as AuthContextInterface);
 
 export type AuthProviderProps = {
   children: React.ReactNode;
@@ -115,5 +121,14 @@ export const AuthProvider = (props: AuthProviderProps) => {
     })();
   }, [props.webRedirectUrl, props.mobileRedirectUrl]);
 
-  return <AuthContext.Provider value={actions}>{props.children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{
+        actions: actions,
+        isSignedIn: client?.authStore.isValid || false,
+        user: client?.authStore.model ?? null,
+      }}>
+      {props.children}
+    </AuthContext.Provider>
+  );
 };
