@@ -54,6 +54,8 @@ export type AuthProviderProps = {
 
 export const AuthProvider = (props: AuthProviderProps) => {
   const client = useClientContext();
+  const [isSignedIn, setIsSignedIn] = React.useState(false);
+  const [user, setUser] = React.useState<User | Admin | null>(null);
   const [authProviders, setAuthProviders] = React.useState<AuthProviderInfo[]>();
 
   const actions: AuthActions = {
@@ -119,14 +121,18 @@ export const AuthProvider = (props: AuthProviderProps) => {
       const methods = await client?.users.listAuthMethods();
       setAuthProviders(methods?.authProviders);
     })();
+    client?.authStore.onChange(() => {
+      setIsSignedIn(client?.authStore.isValid || false);
+      setUser(client?.authStore.model);
+    });
   }, [props.webRedirectUrl, props.mobileRedirectUrl]);
 
   return (
     <AuthContext.Provider
       value={{
         actions: actions,
-        isSignedIn: client?.authStore.isValid || false,
-        user: client?.authStore.model ?? null,
+        isSignedIn: isSignedIn,
+        user: user,
       }}>
       {props.children}
     </AuthContext.Provider>
