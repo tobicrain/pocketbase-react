@@ -37,13 +37,8 @@ export interface AuthActions {
   updateEmail: UpdateEmailType;
   deleteUser: DeleteUserType;
 }
-export interface AuthContextInterface {
-  actions: AuthActions;
-  isSignedIn: boolean;
-  user: User | Admin | null;
-}
 
-export const AuthContext = createContext<AuthContextInterface>({} as AuthContextInterface);
+export const AuthContext = createContext<AuthActions>({} as AuthActions);
 
 export type AuthProviderProps = {
   children: React.ReactNode;
@@ -54,8 +49,6 @@ export type AuthProviderProps = {
 
 export const AuthProvider = (props: AuthProviderProps) => {
   const client = useClientContext();
-  const [isSignedIn, setIsSignedIn] = React.useState(false);
-  const [user, setUser] = React.useState<User | Admin | null>(null);
   const [authProviders, setAuthProviders] = React.useState<AuthProviderInfo[]>();
 
   const actions: AuthActions = {
@@ -121,20 +114,7 @@ export const AuthProvider = (props: AuthProviderProps) => {
       const methods = await client?.users.listAuthMethods();
       setAuthProviders(methods?.authProviders);
     })();
-    client?.authStore.onChange(() => {
-      setIsSignedIn(client?.authStore.isValid || false);
-      setUser(client?.authStore.model);
-    });
   }, [props.webRedirectUrl, props.mobileRedirectUrl]);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        actions: actions,
-        isSignedIn: isSignedIn,
-        user: user,
-      }}>
-      {props.children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={actions}>{props.children}</AuthContext.Provider>;
 };

@@ -1,6 +1,30 @@
-import { useContext } from 'react';
-import { AuthContext, AuthContextInterface } from '../context/auth';
+import { Admin, User } from '@tobicrain/pocketbase';
+import { useContext, useEffect, useState } from 'react';
+import { AuthActions, AuthContext } from '../context/auth';
+import { useClientContext } from './useClientContext';
+
+export interface AuthContextInterface {
+  actions: AuthActions;
+  isSignedIn: boolean;
+  user: User | Admin | null;
+}
 
 export function useAuth(): AuthContextInterface {
-  return useContext(AuthContext);
+  const client = useClientContext();
+  const actions = useContext(AuthContext);
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [user, setUser] = useState<User | Admin | null>(null);
+
+  useEffect(() => {
+    client?.authStore.onChange(() => {
+      setIsSignedIn(client?.authStore.token !== '');
+      setUser(client?.authStore.model);
+    });
+  }, []);
+
+  return {
+    actions: actions,
+    isSignedIn: isSignedIn,
+    user: user,
+  };
 }
