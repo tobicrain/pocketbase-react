@@ -5,6 +5,7 @@ import { appReducer } from './reducers';
 import thunk from 'redux-thunk';
 import { RecordAction } from './reducers/records';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StorageService } from '../service/Storage';
 
 interface Storage {
   getItem(key: string, ...args: Array<any>): any;
@@ -14,29 +15,14 @@ interface Storage {
 
 
 const CustomStorage: Storage = {
-  getItem: async (_key: string, ..._args: Array<any>) => {
-    if (typeof document !== 'undefined') {
-      return localStorage.getItem(_key);
-    }
-    else if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
-      return await AsyncStorage.getItem(_key);
-    }
+  getItem: async (key: string, ..._args: Array<any>) => {
+    return await StorageService.get(key);
   },
-  setItem: async (_key: string, _value: any, ..._args: Array<any>) => {
-    if (typeof document !== 'undefined') {
-      return localStorage.setItem(_key, _value);
-    }
-    else if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
-      return await AsyncStorage.setItem(_key, _value);
-    }
+  setItem: async (key: string, value: any, ..._args: Array<any>) => {
+    return StorageService.set(key, value);
   },
-  removeItem: async (_key: string, ..._args: Array<any>) => {
-    if (typeof document !== 'undefined') {
-      return localStorage.removeItem(_key);
-    }
-    else if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
-      return await AsyncStorage.removeItem(_key);
-    }
+  removeItem: async (key: string, ..._args: Array<any>) => {
+    return StorageService.remove(key);
   },
 };
 
