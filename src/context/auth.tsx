@@ -25,7 +25,7 @@ export type UpdateEmailType = (email: string) => Promise<void>;
 export type DeleteUserType = (id: string) => Promise<void>;
 
 export interface AuthActions {
-  registerWithEmail: RegisterWithEmailType
+  registerWithEmail: RegisterWithEmailType;
   signInWithEmail: SignInWithEmailType;
   signInWithProvider: SignInWithProviderType;
   submitProviderResult: SubmitProviderResultType;
@@ -46,11 +46,10 @@ export type AuthProviderProps = {
   openURL: (url: string) => Promise<void>;
 };
 
-
 export const AuthProvider = (props: AuthProviderProps) => {
   const client = useClientContext();
   const [authProviders, setAuthProviders] = React.useState<AuthProviderInfo[]>();
-  
+
   const actions: AuthActions = {
     registerWithEmail: async (email, password) => {
       await client?.users.create({
@@ -64,7 +63,10 @@ export const AuthProvider = (props: AuthProviderProps) => {
     },
     signInWithProvider: async (provider: string) => {
       const authProvider = authProviders?.find((p) => p.name === provider);
-      const url = authProvider?.authUrl + typeof document !== 'undefined' ? props.webRedirectUrl: props.mobileRedirectUrl;
+      const url =
+        authProvider?.authUrl + typeof document !== 'undefined'
+          ? props.webRedirectUrl
+          : props.mobileRedirectUrl;
       await props.openURL(url);
       await StorageService.set('provider', JSON.stringify(authProviders));
     },
@@ -77,7 +79,12 @@ export const AuthProvider = (props: AuthProviderProps) => {
         const providers = JSON.parse(providersString) as AuthProviderInfo[];
         const authProvider = providers?.find((p) => p.state === state);
         if (authProvider && code) {
-          await client?.users.authViaOAuth2(authProvider.name, code, authProvider.codeVerifier, typeof document !== 'undefined' ? props.webRedirectUrl: props.mobileRedirectUrl);
+          await client?.users.authViaOAuth2(
+            authProvider.name,
+            code,
+            authProvider.codeVerifier,
+            typeof document !== 'undefined' ? props.webRedirectUrl : props.mobileRedirectUrl
+          );
         }
       }
     },
@@ -97,8 +104,8 @@ export const AuthProvider = (props: AuthProviderProps) => {
       await client?.users.requestEmailChange(email);
     },
     deleteUser: async (id: string) => {
-      await client?.users.delete(id)
-    }
+      await client?.users.delete(id);
+    },
   };
 
   React.useEffect(() => {
@@ -108,7 +115,5 @@ export const AuthProvider = (props: AuthProviderProps) => {
     })();
   }, [props.webRedirectUrl, props.mobileRedirectUrl]);
 
-  return (
-    <AuthContext.Provider value={actions}>{props.children}</AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={actions}>{props.children}</AuthContext.Provider>;
 };

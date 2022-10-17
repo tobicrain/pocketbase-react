@@ -4,7 +4,7 @@ import { createContext, useEffect } from 'react';
 import { useClientContext } from '../hooks/useClientContext';
 import { Record } from '../interfaces/Record';
 import { recordsAction } from '../store/actions';
-import { StorageService } from '../service/Storage';
+import { subscriptionsAction } from '../store/actions';
 
 type SubscribeType = (collectionName: string) => Promise<void>;
 type UnsubscribeType = (collectionName?: string) => Promise<void>;
@@ -22,11 +22,7 @@ interface ContentActions {
   delete: DeleteType;
 }
 
-interface ContentContext {
-  actions: ContentActions;
-}
-
-export const ContentContext = createContext<ContentContext>({} as ContentContext);
+export const ContentContext = createContext<ContentActions>({} as ContentActions);
 
 export type ContentProviderProps = {
   children: React.ReactNode;
@@ -34,8 +30,8 @@ export type ContentProviderProps = {
 };
 
 interface MessageData {
-    action: string;
-    record: Record;
+  action: string;
+  record: Record;
 }
 
 export const ContentProvider = (props: ContentProviderProps) => {
@@ -44,56 +40,45 @@ export const ContentProvider = (props: ContentProviderProps) => {
 
   const actions: ContentActions = {
     subscribe: async (collectionName: string) => {
-      const subscribedCollectionsString = await StorageService.get(StorageService.Constants.SUBSCRIBED) ?? JSON.stringify([]);
-      var subscribedCollections = JSON.parse(subscribedCollectionsString) as string[];
-
-      await client?.realtime.subscribe(collectionName, (event: MessageData) => {
-        switch (event.action) {
-          case 'create':
-            dispatch(recordsAction.addRecord(collectionName, event.record));
-            break;
-          case 'update':
-            dispatch(recordsAction.updateRecord(collectionName, event.record));
-            break;
-          case 'delete':
-            dispatch(recordsAction.deleteRecord(collectionName, event.record));
-            break;
-          default:
-            break;
-        }
-      })
-      .then(() => {
-        if (!subscribedCollections.includes(collectionName)) {
-          subscribedCollections.push(collectionName);
-        }
-      })
-      .catch((_error) => {
-        subscribedCollections = subscribedCollections.filter((collection) => collection !== collectionName);
-      });
-      
-      await StorageService.set(StorageService.Constants.SUBSCRIBED, JSON.stringify(subscribedCollections));
-    },
-    unsubscribe: async (collectionName?: string) => {
-      const subscribedCollectionsString = await StorageService.get(StorageService.Constants.SUBSCRIBED) ?? JSON.stringify([]);
-      var subscribedCollections = JSON.parse(subscribedCollectionsString) as string[];
-
-      if (collectionName) {
-        await client?.realtime.unsubscribe(collectionName)
+      await client?.realtime
+        .subscribe(collectionName, (event: MessageData) => {
+          switch (event.action) {
+            case 'create':
+              dispatch(recordsAction.addRecord(collectionName, event.record));
+              break;
+            case 'update':
+              dispatch(recordsAction.updateRecord(collectionName, event.record));
+              break;
+            case 'delete':
+              dispatch(recordsAction.deleteRecord(collectionName, event.record));
+              break;
+            default:
+              break;
+          }
+        })
         .then(() => {
-          subscribedCollections = subscribedCollections.filter((collection) => collection !== collectionName);
+          dispatch(subscriptionsAction.addSubscription(collectionName));
         })
         .catch((_error) => {
-          subscribedCollections = subscribedCollections.filter((collection) => collection !== collectionName);
+          dispatch(subscriptionsAction.deleteSubscription(collectionName));
         });
+    },
+    unsubscribe: async (collectionName?: string) => {
+      if (collectionName) {
+        await client?.realtime
+          .unsubscribe(collectionName)
+          .then(() => {
+            dispatch(subscriptionsAction.deleteSubscription(collectionName));
+          })
+          .catch((_error) => {});
       } else {
-        await client?.realtime.unsubscribe()
-        .then(() => {
-          subscribedCollections = [];
-        })
-        .catch((_error) => {});
+        await client?.realtime
+          .unsubscribe()
+          .then(() => {
+            dispatch(subscriptionsAction.setSubscriptions([]));
+          })
+          .catch((_error) => {});
       }
-
-      await StorageService.set(StorageService.Constants.SUBSCRIBED, JSON.stringify(subscribedCollections));
     },
     fetch: async (collectionName: string) => {
       const records = await client?.records.getFullList(collectionName, 200).catch((_error) => {});
@@ -124,9 +109,5 @@ export const ContentProvider = (props: ContentProviderProps) => {
     };
   }, [props.collections]);
 
-  return (
-    <ContentContext.Provider value={{
-      actions,
-    }}>{props.children}</ContentContext.Provider>
-  );
+  return <ContentContext.Provider value={actions}>{props.children}</ContentContext.Provider>;
 };

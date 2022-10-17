@@ -44,11 +44,4 @@ const updateRecord = (key: string, payload: Record) =>
     payload,
   } as RecordAction);
 
-export {
-  setRecords,
-  addRecord,
-  addRecords,
-  deleteRecord,
-  deleteRecords,
-  updateRecord,
-};
+export { setRecords, addRecord, addRecords, deleteRecord, deleteRecords, updateRecord };

@@ -26,7 +26,10 @@ export const Pocketbase = (props: PocketbaseProviderProps) => {
     <ClientProvider client={client}>
       <Provider store={store.store}>
         <PersistGate persistor={store.persistor}>
-          <AuthProvider webRedirectUrl={props.webRedirectUrl}  mobileRedirectUrl={props.mobileRedirectUrl} openURL={props.openURL} >
+          <AuthProvider
+            webRedirectUrl={props.webRedirectUrl}
+            mobileRedirectUrl={props.mobileRedirectUrl}
+            openURL={props.openURL}>
             <ContentProvider collections={props.initialCollections}>
               {props.children}
             </ContentProvider>
@@ -34,5 +37,5 @@ export const Pocketbase = (props: PocketbaseProviderProps) => {
         </PersistGate>
       </Provider>
     </ClientProvider>
-  ): null;  
+  ) : null;
 };

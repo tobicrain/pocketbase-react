@@ -6,7 +6,7 @@ export interface ReduxRecord {
 }
 
 export type RecordAction = {
-  type: ReduxType.Types;
+  type: ReduxType.RecordTypes;
   key: string;
   payload: null | Record | Record[];
 };

@@ -4,7 +4,6 @@ import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { appReducer } from './reducers';
 import thunk from 'redux-thunk';
 import { RecordAction } from './reducers/records';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StorageService } from '../service/Storage';
 
 interface Storage {
@@ -13,22 +12,21 @@ interface Storage {
   removeItem(key: string, ...args: Array<any>): any;
 }
 
-
 const CustomStorage: Storage = {
   getItem: async (key: string, ..._args: Array<any>) => {
     return await StorageService.get(key);
   },
   setItem: async (key: string, value: any, ..._args: Array<any>) => {
-    return StorageService.set(key, value);
+    return await StorageService.set(key, value);
   },
   removeItem: async (key: string, ..._args: Array<any>) => {
-    return StorageService.remove(key);
+    return await StorageService.remove(key);
   },
 };
 
 export const persistConfig = {
   key: 'root',
-  storage: CustomStorage
+  storage: CustomStorage,
 };
 
 const reducer = combineReducers({
@@ -44,7 +42,6 @@ type AppDispatch = typeof store.dispatch<RecordAction>;
 const useAppDispatch = store.dispatch;
 type RootState = ReturnType<typeof store.getState>;
 const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-
 
 const persistor = persistStore(store);
 

@@ -7,5 +7,4 @@ const useClientContext = () => {
   return context;
 };
 
-
 export { useClientContext };

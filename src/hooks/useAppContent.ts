@@ -4,12 +4,12 @@ import { ContentContext } from '../context';
 import { Record } from '../interfaces/Record';
 import { StorageService } from '../service/Storage';
 
-export type SubscribeType = () => Promise<void | undefined>
+export type SubscribeType = () => Promise<void | undefined>;
 export type UnsubscribeType = () => Promise<void | undefined>;
-export type FetchType = () => Promise<void | undefined>
-export type CreateType = (record: {}) => Promise<void | undefined>
-export type UpdateType = (id: string, record: {}) => Promise<void | undefined>
-export type DeleteType = (id: string) => Promise<void | undefined>
+export type FetchType = () => Promise<void | undefined>;
+export type CreateType = (record: {}) => Promise<void | undefined>;
+export type UpdateType = (id: string, record: {}) => Promise<void | undefined>;
+export type DeleteType = (id: string) => Promise<void | undefined>;
 
 export interface Actions {
   subscribe: SubscribeType;
@@ -23,44 +23,32 @@ export interface Actions {
 export function useAppContent<T extends Record>(
   collectionName: string,
   initialFetch: boolean = false
-): {records: T[], actions: Actions, isSubscribed: boolean} {
-  const records = (store.useAppSelector((state) => state.reducer.records[collectionName]) ?? []) as T[];
+): { records: T[]; actions: Actions; isSubscribed: boolean } {
+  const records = (store.useAppSelector((state) => state.reducer.records[collectionName]) ??
+    []) as T[];
+  const subscriptions = store.useAppSelector((state) => state.reducer.subscriptions).subscriptions;
   const context = useContext(ContentContext);
 
   useEffect(() => {
     if (initialFetch) {
-      context.actions.fetch(collectionName);
+      context.fetch(collectionName);
     }
   }, [collectionName, initialFetch]);
 
   const [isSubscribed, setIsSubscribed] = useState(false);
-  
-  async function refetchSubscribeState() {
-    const subscribedCollectionsString = await StorageService.get(StorageService.Constants.SUBSCRIBED) ?? JSON.stringify([]);
-    var subscribedCollections = JSON.parse(subscribedCollectionsString) as string[];
-    setIsSubscribed(subscribedCollections.includes(collectionName));
-  }
 
   useEffect(() => {
-    (async () => {
-      await refetchSubscribeState();
-    })();
-  }, [])
-  
+    setIsSubscribed(subscriptions.includes(collectionName));
+  }, [subscriptions]);
 
   const actions: Actions = {
-    subscribe: async () => {
-      await context.actions.subscribe(collectionName)
-      await refetchSubscribeState()
-    },
-    unsubscribe: async () => {
-      context.actions.unsubscribe(collectionName)
-      await refetchSubscribeState()
-    },
-    fetch: async () => await context.actions.fetch(collectionName),
-    create: async (record: {}) => await context.actions.create(collectionName, record),
-    update: async (id: string, record: {}) => await context.actions.update(collectionName, id, record),
-    delete: async (id: string) => await context.actions.delete(collectionName, id),
+    subscribe: async () => await context.subscribe(collectionName),
+    unsubscribe: async () => await context.unsubscribe(collectionName),
+    fetch: async () => await context.fetch(collectionName),
+    create: async (record: {}) => await context.create(collectionName, record),
+    update: async (id: string, record: {}) => await context.update(collectionName, id, record),
+    delete: async (id: string) => await context.delete(collectionName, id),
   };
+
   return { records, actions, isSubscribed };
 }

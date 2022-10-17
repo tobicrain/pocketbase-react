@@ -1,5 +1,5 @@
-const { NODE_ENV, BABEL_ENV } = process.env
-const cjs = NODE_ENV === 'test' || BABEL_ENV === 'commonjs'
+const { NODE_ENV, BABEL_ENV } = process.env;
+const cjs = NODE_ENV === 'test' || BABEL_ENV === 'commonjs';
 
 module.exports = {
   presets: [
@@ -28,13 +28,11 @@ module.exports = {
       '@babel/transform-runtime',
       {
         useESModules: !cjs,
-        version: require('./package.json').dependencies[
-          '@babel/runtime'
-        ]
+        version: require('./package.json').dependencies['@babel/runtime'],
       },
     ],
   ].filter(Boolean),
   assumptions: {
     enumerableModuleMeta: true,
   },
-}
+};
