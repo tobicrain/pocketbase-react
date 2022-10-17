@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { createContext, useEffect } from 'react';
-import PocketBase from '@tobicrain/pocketbase';
+import PocketBase, { Admin, BaseAuthStore, LocalAuthStore, User } from '@tobicrain/pocketbase';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import * as store from '../store/store';
+import { store, persistor } from '../store/store';
 import { ClientProvider } from './client';
 import { ContentProvider } from './content';
 import { AuthProvider } from './auth';
+import { StorageService } from '../service/Storage';
+import { authAction } from '../store';
 
 export const PocketbaseContext = createContext<PocketBase | null>(null);
 
@@ -24,8 +26,8 @@ export const Pocketbase = (props: PocketbaseProviderProps) => {
 
   return client ? (
     <ClientProvider client={client}>
-      <Provider store={store.store}>
-        <PersistGate persistor={store.persistor}>
+      <Provider store={store}>
+        <PersistGate persistor={persistor}>
           <AuthProvider
             webRedirectUrl={props.webRedirectUrl}
             mobileRedirectUrl={props.mobileRedirectUrl}

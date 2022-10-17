@@ -4,6 +4,7 @@ import * as React from 'react';
 import { createContext, useEffect } from 'react';
 import { useClientContext } from '../hooks/useClientContext';
 import { StorageService } from '../service/Storage';
+import { authAction, store, useAppDispatch, useAppSelector } from '../store';
 
 export type AuthProviderInfo = {
   name: string;
@@ -108,13 +109,32 @@ export const AuthProvider = (props: AuthProviderProps) => {
       await client?.users.delete(id);
     },
   };
+  const dispatch = useAppDispatch;
+  const selector = useAppSelector((state) => state.reducer.auth);
 
   React.useEffect(() => {
+    const listener = client?.authStore.onChange(() => {
+      const cookie = client?.authStore.exportToCookie();
+      if (cookie) dispatch(authAction.setCookie(cookie));
+    });
+
     (async () => {
       const methods = await client?.users.listAuthMethods();
       setAuthProviders(methods?.authProviders);
     })();
+
+    return () => {
+      if (listener) listener();
+    };
   }, [props.webRedirectUrl, props.mobileRedirectUrl]);
+
+  React.useEffect(() => {
+    const cookie = selector.cookie;
+    if (cookie) {
+      console.log('cookie', cookie);
+      client?.authStore.loadFromCookie(cookie);
+    }
+  }, [selector.cookie]);
 
   return <AuthContext.Provider value={actions}>{props.children}</AuthContext.Provider>;
 };

@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export class StorageService {
   static Constants = {
     SUBSCRIBED: 'subscribed',
+    COOKIE: 'cookie',
   };
 
   static async get(key: string): Promise<string | null> {

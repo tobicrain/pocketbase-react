@@ -1,6 +1,7 @@
 import { Admin, User } from '@tobicrain/pocketbase';
 import { useContext, useEffect, useState } from 'react';
 import { AuthActions, AuthContext } from '../context/auth';
+import { StorageService } from '../service/Storage';
 import { useClientContext } from './useClientContext';
 
 export interface AuthContextInterface {
@@ -18,6 +19,10 @@ export function useAuth(): AuthContextInterface {
   function updateAuth() {
     setIsSignedIn(client?.authStore.token !== '');
     setUser(client?.authStore.model ?? null);
+    const cookie = client?.authStore.exportToCookie();
+    if (cookie) {
+      StorageService.set(StorageService.Constants.COOKIE, cookie);
+    }
   }
 
   useEffect(() => {
