@@ -27,11 +27,14 @@ export const Pocketbase = (props: PocketbaseProviderProps) => {
     const client = new PocketBase(props.serverURL);
     client.authStore.onChange(async () => {
       await StorageService.set(StorageService.Constants.COOKIE, client.authStore.exportToCookie());
+      setInitialCollections([]);
       setInitialCollections(props.initialCollections);
     });
     StorageService.get(StorageService.Constants.COOKIE).then((cookie) => {
       if (cookie) {
         client.authStore.loadFromCookie(cookie);
+        setInitialCollections([]);
+        setInitialCollections(props.initialCollections);
       }
       setClient(client);
     });

@@ -19,10 +19,6 @@ export function useAuth(): AuthContextInterface {
   function updateAuth() {
     setIsSignedIn(client?.authStore.token !== '');
     setUser(client?.authStore.model ?? null);
-    const cookie = client?.authStore.exportToCookie();
-    if (cookie) {
-      StorageService.set(StorageService.Constants.COOKIE, cookie);
-    }
   }
 
   useEffect(() => {

@@ -38,6 +38,13 @@ export const ContentProvider = (props: ContentProviderProps) => {
   const client = useClientContext();
   const dispatch = store.useAppDispatch;
 
+  function tempErrorHandler(error: any) {
+    // TODO: Handle error
+    // IDEA: Create new ErrorContext and Update it with error
+    if (error?.originalError?.name !== 'AbortError') {
+      console.log('Error in content provider', JSON.stringify(error));
+    }
+  }
   const actions: ContentActions = {
     subscribe: async (collectionName: string) => {
       await client?.realtime
@@ -59,9 +66,7 @@ export const ContentProvider = (props: ContentProviderProps) => {
         .then(() => {
           dispatch(subscriptionsAction.addSubscription(collectionName));
         })
-        .catch((_error) => {
-          dispatch(subscriptionsAction.deleteSubscription(collectionName));
-        });
+        .catch(tempErrorHandler);
     },
     unsubscribe: async (collectionName?: string) => {
       if (collectionName) {
@@ -70,28 +75,32 @@ export const ContentProvider = (props: ContentProviderProps) => {
           .then(() => {
             dispatch(subscriptionsAction.deleteSubscription(collectionName));
           })
-          .catch((_error) => {});
+          .catch(tempErrorHandler);
       } else {
         await client?.realtime
           .unsubscribe()
           .then(() => {
             dispatch(subscriptionsAction.setSubscriptions([]));
           })
-          .catch((_error) => {});
+          .catch(tempErrorHandler);
       }
     },
     fetch: async (collectionName: string) => {
-      const records = await client?.records.getFullList(collectionName, 200).catch((_error) => {});
-      dispatch(recordsAction.setRecords(collectionName, records as Record[]));
+      await client?.records
+        .getFullList(collectionName, 200)
+        .then((records) => {
+          dispatch(recordsAction.setRecords(collectionName, records as Record[]));
+        })
+        .catch(tempErrorHandler);
     },
     create: async (collectionName: string, record: {}) => {
-      await client?.records.create(collectionName, record).catch((_error) => {});
+      await client?.records.create(collectionName, record).catch(tempErrorHandler);
     },
     update: async (collectionName: string, recordId: string, record: {}) => {
-      await client?.records.update(collectionName, recordId, record).catch((_error) => {});
+      await client?.records.update(collectionName, recordId, record).catch(tempErrorHandler);
     },
     delete: async (collectionName: string, recordId: string) => {
-      await client?.records.delete(collectionName, recordId).catch((_error) => {});
+      await client?.records.delete(collectionName, recordId).catch(tempErrorHandler);
     },
   };
 

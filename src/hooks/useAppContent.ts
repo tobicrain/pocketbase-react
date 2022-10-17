@@ -31,7 +31,9 @@ export function useAppContent<T extends Record>(
 
   useEffect(() => {
     if (initialFetch) {
-      context.fetch(collectionName);
+      (async () => {
+        await context.fetch(collectionName);
+      })();
     }
   }, [collectionName, initialFetch]);
 
