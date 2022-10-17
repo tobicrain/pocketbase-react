@@ -15,10 +15,15 @@ export function useAuth(): AuthContextInterface {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [user, setUser] = useState<User | Admin | null>(null);
 
+  function updateAuth() {
+    setIsSignedIn(client?.authStore.token !== '');
+    setUser(client?.authStore.model ?? null);
+  }
+
   useEffect(() => {
+    updateAuth();
     client?.authStore.onChange(() => {
-      setIsSignedIn(client?.authStore.token !== '');
-      setUser(client?.authStore.model);
+      updateAuth();
     });
   }, []);
 
