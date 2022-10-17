@@ -7,7 +7,7 @@ import { recordsAction } from '../store/actions';
 import { StorageService } from '../service/Storage';
 
 type SubscribeType = (collectionName: string) => Promise<void>;
-type UnsubscribeType = (collectionName?: string) => void;
+type UnsubscribeType = (collectionName?: string) => Promise<void>;
 type FetchType = (collectionName: string) => Promise<void>;
 type CreateType = (collectionName: string, record: {}) => Promise<void>;
 type UpdateType = (collectionName: string, recordId: string, record: {}) => Promise<void>;
@@ -41,11 +41,12 @@ interface MessageData {
 export const ContentProvider = (props: ContentProviderProps) => {
   const client = useClientContext();
   const dispatch = store.useAppDispatch;
-  const [collections, _] = React.useState<string[]>(props.collections || []);
-
 
   const actions: ContentActions = {
     subscribe: async (collectionName: string) => {
+      const subscribedCollectionsString = await StorageService.get(StorageService.Constants.SUBSCRIBED) ?? JSON.stringify([]);
+      var subscribedCollections = JSON.parse(subscribedCollectionsString) as string[];
+
       await client?.realtime.subscribe(collectionName, (event: MessageData) => {
         switch (event.action) {
           case 'create':
@@ -61,27 +62,38 @@ export const ContentProvider = (props: ContentProviderProps) => {
             break;
         }
       })
-      .then(async () => {
-          const subscribed = JSON.parse(await StorageService.get("subscribed") ?? JSON.stringify([])) as string[];
-        await StorageService.set("subscribed", JSON.stringify([...subscribed, collectionName]));
+      .then(() => {
+        if (!subscribedCollections.includes(collectionName)) {
+          subscribedCollections.push(collectionName);
+        }
       })
-      .catch((_error) => {});
+      .catch((_error) => {
+        subscribedCollections = subscribedCollections.filter((collection) => collection !== collectionName);
+      });
+      
+      await StorageService.set(StorageService.Constants.SUBSCRIBED, JSON.stringify(subscribedCollections));
     },
-    unsubscribe: (collectionName?: string) => {
+    unsubscribe: async (collectionName?: string) => {
+      const subscribedCollectionsString = await StorageService.get(StorageService.Constants.SUBSCRIBED) ?? JSON.stringify([]);
+      var subscribedCollections = JSON.parse(subscribedCollectionsString) as string[];
+
       if (collectionName) {
-        client?.realtime.unsubscribe(collectionName)
-        .then(async () => {
-          const subscribed = JSON.parse(await StorageService.get("subscribed") ?? JSON.stringify([])) as string[];
-          await StorageService.set("subscribed", JSON.stringify(subscribed.filter((name) => name !== collectionName)));
+        await client?.realtime.unsubscribe(collectionName)
+        .then(() => {
+          subscribedCollections = subscribedCollections.filter((collection) => collection !== collectionName);
         })
-        .catch((_error) => {});
+        .catch((_error) => {
+          subscribedCollections = subscribedCollections.filter((collection) => collection !== collectionName);
+        });
       } else {
-        client?.realtime.unsubscribe()
-        .then(async () => {
-          await StorageService.set("subscribed", JSON.stringify([]));
+        await client?.realtime.unsubscribe()
+        .then(() => {
+          subscribedCollections = [];
         })
         .catch((_error) => {});
       }
+
+      await StorageService.set(StorageService.Constants.SUBSCRIBED, JSON.stringify(subscribedCollections));
     },
     fetch: async (collectionName: string) => {
       const records = await client?.records.getFullList(collectionName, 200).catch((_error) => {});
@@ -99,14 +111,18 @@ export const ContentProvider = (props: ContentProviderProps) => {
   };
 
   useEffect(() => {
-    if (collections) {
-      collections.forEach((collectionName) => {
-        actions.fetch(collectionName);
-        actions.subscribe(collectionName);
+    if (props.collections) {
+      props.collections.forEach(async (collectionName) => {
+        await actions.fetch(collectionName);
+        await actions.subscribe(collectionName);
       });
     }
-    return () => actions.unsubscribe();
-  }, [collections]);
+    return () => {
+      (async () => {
+        await actions.unsubscribe();
+      })();
+    };
+  }, [props.collections]);
 
   return (
     <ContentContext.Provider value={{

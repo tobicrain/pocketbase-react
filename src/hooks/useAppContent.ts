@@ -5,7 +5,7 @@ import { Record } from '../interfaces/Record';
 import { StorageService } from '../service/Storage';
 
 export type SubscribeType = () => Promise<void | undefined>
-export type UnsubscribeType = () => void | undefined;
+export type UnsubscribeType = () => Promise<void | undefined>;
 export type FetchType = () => Promise<void | undefined>
 export type CreateType = (record: {}) => Promise<void | undefined>
 export type UpdateType = (id: string, record: {}) => Promise<void | undefined>
@@ -36,8 +36,9 @@ export function useAppContent<T extends Record>(
   const [isSubscribed, setIsSubscribed] = useState(false);
   
   async function refetchSubscribeState() {
-    const isSubscribed = JSON.parse(await StorageService.get("subscribed") ?? JSON.stringify([])) as string[];
-    setIsSubscribed(isSubscribed.includes(collectionName));
+    const subscribedCollectionsString = await StorageService.get(StorageService.Constants.SUBSCRIBED) ?? JSON.stringify([]);
+    var subscribedCollections = JSON.parse(subscribedCollectionsString) as string[];
+    setIsSubscribed(subscribedCollections.includes(collectionName));
   }
 
   useEffect(() => {
@@ -52,9 +53,9 @@ export function useAppContent<T extends Record>(
       await context.actions.subscribe(collectionName)
       await refetchSubscribeState()
     },
-    unsubscribe: () => {
+    unsubscribe: async () => {
       context.actions.unsubscribe(collectionName)
-      refetchSubscribeState()
+      await refetchSubscribeState()
     },
     fetch: async () => await context.actions.fetch(collectionName),
     create: async (record: {}) => await context.actions.create(collectionName, record),
