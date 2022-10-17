@@ -8,7 +8,6 @@ import { ClientProvider } from './client';
 import { ContentProvider } from './content';
 import { AuthProvider } from './auth';
 import { StorageService } from '../service/Storage';
-import { authAction } from '../store';
 
 export const PocketbaseContext = createContext<PocketBase | null>(null);
 
@@ -22,7 +21,21 @@ export type PocketbaseProviderProps = {
 };
 
 export const Pocketbase = (props: PocketbaseProviderProps) => {
-  const client = new PocketBase(props.serverURL);
+  const [client, setClient] = React.useState<PocketBase | null>(null);
+  const [initialCollections, setInitialCollections] = React.useState<string[]>();
+  useEffect(() => {
+    const client = new PocketBase(props.serverURL);
+    client.authStore.onChange(async () => {
+      await StorageService.set(StorageService.Constants.COOKIE, client.authStore.exportToCookie());
+      setInitialCollections(props.initialCollections);
+    });
+    StorageService.get(StorageService.Constants.COOKIE).then((cookie) => {
+      if (cookie) {
+        client.authStore.loadFromCookie(cookie);
+      }
+      setClient(client);
+    });
+  }, [props.serverURL]);
 
   return client ? (
     <ClientProvider client={client}>
@@ -32,9 +45,7 @@ export const Pocketbase = (props: PocketbaseProviderProps) => {
             webRedirectUrl={props.webRedirectUrl}
             mobileRedirectUrl={props.mobileRedirectUrl}
             openURL={props.openURL}>
-            <ContentProvider collections={props.initialCollections}>
-              {props.children}
-            </ContentProvider>
+            <ContentProvider collections={initialCollections}>{props.children}</ContentProvider>
           </AuthProvider>
         </PersistGate>
       </Provider>

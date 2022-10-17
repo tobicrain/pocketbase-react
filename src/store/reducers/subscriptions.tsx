@@ -1,46 +1,29 @@
 import * as ReduxType from '../types';
 
-export interface ReduxSubscriptions {
-  subscriptions: string[];
-}
-
 export type SubscriptionAction = {
   type: ReduxType.SubscriptionsTypes;
   payload: string | string[];
 };
 
 function appendSubscription(subscription: string, subscriptions: string[]): string[] {
-  return [...subscriptions, subscription];
+  return subscriptions.includes(subscription) ? subscriptions : [...subscriptions, subscription];
 }
 
 function deleteSubscription(subscription: string, subscriptions: string[]): string[] {
   return subscriptions.filter((sub) => sub !== subscription);
 }
 
-export const subscriptions = (
-  state: ReduxSubscriptions = {
-    subscriptions: [],
-  },
-  action: SubscriptionAction
-) => {
-  const list = state.subscriptions;
-
+export const subscriptions = (state: string[] = [], action: SubscriptionAction) => {
   switch (action.type) {
     case ReduxType.SET_SUBSCRIPTIONS:
       if (Array.isArray(action.payload)) {
-        return {
-          subscriptions: action.payload,
-        };
+        return action.payload as string[];
       }
     case ReduxType.ADD_SUBSCRIPTION:
-      return {
-        subscriptions: appendSubscription(action.payload as string, list),
-      };
+      return appendSubscription(action.payload as string, state) as string[];
     case ReduxType.DELETE_SUBSCRIPTION:
-      return {
-        subscriptions: deleteSubscription(action.payload as string, list),
-      };
+      return deleteSubscription(action.payload as string, state) as string[];
     default:
-      return state;
+      return state as string[];
   }
 };

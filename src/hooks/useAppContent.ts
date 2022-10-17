@@ -3,6 +3,7 @@ import * as store from '../store';
 import { ContentContext } from '../context';
 import { Record } from '../interfaces/Record';
 import { StorageService } from '../service/Storage';
+import { useAppSelector } from '../store';
 
 export type SubscribeType = () => Promise<void | undefined>;
 export type UnsubscribeType = () => Promise<void | undefined>;
@@ -24,9 +25,8 @@ export function useAppContent<T extends Record>(
   collectionName: string,
   initialFetch: boolean = false
 ): { records: T[]; actions: Actions; isSubscribed: boolean } {
-  const records = (store.useAppSelector((state) => state.reducer.records[collectionName]) ??
-    []) as T[];
-  const subscriptions = store.useAppSelector((state) => state.reducer.subscriptions).subscriptions;
+  const records = useAppSelector((state) => state.reducer.records[collectionName]) as T[];
+  const subscriptions = useAppSelector((state) => state.reducer.subscriptions);
   const context = useContext(ContentContext);
 
   useEffect(() => {
