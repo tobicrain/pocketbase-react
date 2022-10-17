@@ -62,7 +62,8 @@ export const ContentProvider = (props: ContentProviderProps) => {
         }
       })
       .then(async () => {
-        await StorageService.set("a", JSON.stringify([...collections, collectionName]));
+          const subscribed = JSON.parse(await StorageService.get("subscribed") ?? JSON.stringify([])) as string[];
+        await StorageService.set("subscribed", JSON.stringify([...subscribed, collectionName]));
       })
       .catch((_error) => {});
     },
