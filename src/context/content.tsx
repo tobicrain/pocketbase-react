@@ -4,6 +4,7 @@ import { createContext, useEffect } from 'react';
 import { useClientContext } from '../hooks/useClientContext';
 import { Record } from '../interfaces/Record';
 import { recordsAction } from '../store/actions';
+import { StorageService } from '../service/Storage';
 
 type SubscribeType = (collectionName: string) => Promise<void>;
 type UnsubscribeType = (collectionName?: string) => void;
@@ -23,7 +24,6 @@ interface ContentActions {
 
 interface ContentContext {
   actions: ContentActions;
-  subscribed: string[];
 }
 
 export const ContentContext = createContext<ContentContext>({} as ContentContext);
@@ -42,7 +42,7 @@ export const ContentProvider = (props: ContentProviderProps) => {
   const client = useClientContext();
   const dispatch = store.useAppDispatch;
   const [collections, _] = React.useState<string[]>(props.collections || []);
-  const [subscribed, setSubscribed] = React.useState<string[]>([]);
+
 
   const actions: ContentActions = {
     subscribe: async (collectionName: string) => {
@@ -61,22 +61,23 @@ export const ContentProvider = (props: ContentProviderProps) => {
             break;
         }
       })
-      .then(() => {
-        setSubscribed([...subscribed, collectionName]);
+      .then(async () => {
+        await StorageService.set("a", JSON.stringify([...collections, collectionName]));
       })
       .catch((_error) => {});
     },
     unsubscribe: (collectionName?: string) => {
       if (collectionName) {
         client?.realtime.unsubscribe(collectionName)
-        .then(() => {
-          setSubscribed(subscribed.filter((name) => name !== collectionName));
+        .then(async () => {
+          const subscribed = JSON.parse(await StorageService.get("subscribed") ?? JSON.stringify([])) as string[];
+          await StorageService.set("subscribed", JSON.stringify(subscribed.filter((name) => name !== collectionName)));
         })
         .catch((_error) => {});
       } else {
         client?.realtime.unsubscribe()
-        .then(() => {
-          setSubscribed([]);
+        .then(async () => {
+          await StorageService.set("subscribed", JSON.stringify([]));
         })
         .catch((_error) => {});
       }
@@ -109,7 +110,6 @@ export const ContentProvider = (props: ContentProviderProps) => {
   return (
     <ContentContext.Provider value={{
       actions,
-      subscribed,
     }}>{props.children}</ContentContext.Provider>
   );
 };

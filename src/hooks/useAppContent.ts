@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import * as store from '../store';
 import { ContentContext } from '../context';
 import { Record } from '../interfaces/Record';
+import { StorageService } from '../service/Storage';
 
 export type SubscribeType = () => Promise<void | undefined>
 export type UnsubscribeType = () => void | undefined;
@@ -33,15 +34,28 @@ export function useAppContent<T extends Record>(
   }, [collectionName, initialFetch]);
 
   const [isSubscribed, setIsSubscribed] = useState(false);
+  
+  async function refetchSubscribeState() {
+    const isSubscribed = JSON.parse(await StorageService.get("subscribed") ?? JSON.stringify([])) as string[];
+    setIsSubscribed(isSubscribed.includes(collectionName));
+  }
 
   useEffect(() => {
-    setIsSubscribed(context.subscribed.includes(collectionName));
-  }, [collectionName, context.subscribed])
+    (async () => {
+      await refetchSubscribeState();
+    })();
+  }, [])
   
 
   const actions: Actions = {
-    subscribe: async () => await context.actions.subscribe(collectionName),
-    unsubscribe: () => context.actions.unsubscribe(collectionName),
+    subscribe: async () => {
+      await context.actions.subscribe(collectionName)
+      await refetchSubscribeState()
+    },
+    unsubscribe: () => {
+      context.actions.unsubscribe(collectionName)
+      refetchSubscribeState()
+    },
     fetch: async () => await context.actions.fetch(collectionName),
     create: async (record: {}) => await context.actions.create(collectionName, record),
     update: async (id: string, record: {}) => await context.actions.update(collectionName, id, record),
