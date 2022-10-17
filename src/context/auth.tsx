@@ -41,7 +41,8 @@ export const AuthContext = createContext<AuthActions | null>(null);
 
 export type AuthProviderProps = {
   children: React.ReactNode;
-  redirectUrl: string;
+  webRedirectUrl: string;
+  mobileRedirectUrl: string;
   openURL: (url: string) => Promise<void>;
 };
 
@@ -63,7 +64,7 @@ export const AuthProvider = (props: AuthProviderProps) => {
     },
     signInWithProvider: async (provider: string) => {
       const authProvider = authProviders?.find((p) => p.name === provider);
-      const url = authProvider?.authUrl + props.redirectUrl;
+      const url = authProvider?.authUrl + typeof document !== 'undefined' ? props.webRedirectUrl: props.mobileRedirectUrl;
       await props.openURL(url);
       await StorageService.set('provider', JSON.stringify(authProviders));
     },
@@ -76,7 +77,7 @@ export const AuthProvider = (props: AuthProviderProps) => {
         const providers = JSON.parse(providersString) as AuthProviderInfo[];
         const authProvider = providers?.find((p) => p.state === state);
         if (authProvider && code) {
-          await client?.users.authViaOAuth2(authProvider.name, code, authProvider.codeVerifier, props.redirectUrl);
+          await client?.users.authViaOAuth2(authProvider.name, code, authProvider.codeVerifier, typeof document !== 'undefined' ? props.webRedirectUrl: props.mobileRedirectUrl);
         }
       }
     },
@@ -105,7 +106,7 @@ export const AuthProvider = (props: AuthProviderProps) => {
       const methods = await client?.users.listAuthMethods();
       setAuthProviders(methods?.authProviders);
     })();
-  }, [props.redirectUrl]);
+  }, [props.webRedirectUrl, props.mobileRedirectUrl]);
 
   return (
     <AuthContext.Provider value={actions}>{props.children}</AuthContext.Provider>

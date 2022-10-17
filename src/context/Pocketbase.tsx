@@ -13,7 +13,8 @@ export const PocketbaseContext = createContext<PocketBase | null>(null);
 export type PocketbaseProviderProps = {
   children: React.ReactNode;
   serverURL: string;
-  redirectURL: string;
+  webRedirectUrl: string;
+  mobileRedirectUrl: string;
   openURL: (url: string) => Promise<void>;
   initialCollections?: string[];
 };
@@ -25,7 +26,7 @@ export const Pocketbase = (props: PocketbaseProviderProps) => {
     <ClientProvider client={client}>
       <Provider store={store.store}>
         <PersistGate persistor={store.persistor}>
-          <AuthProvider redirectUrl={props.redirectURL} openURL={props.openURL} >
+          <AuthProvider webRedirectUrl={props.webRedirectUrl}  mobileRedirectUrl={props.mobileRedirectUrl} openURL={props.openURL} >
             <ContentProvider collections={props.initialCollections}>
               {props.children}
             </ContentProvider>

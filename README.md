@@ -51,15 +51,18 @@ import { Pocketbase } from 'pocketbase-react';
 
 const serverURL = "YOUR_SERVER_URL"
 const collections = ['COLLECTION_NAME_01', 'COLLECTION_NAME_02']
-const credentials = {
-    username: 'YOUR_EMAIL',
-    password: 'YOUR_PASSWORD'
-}
+const webRedirectURL = "http://..."
+const mobileRedirectURL = "expo://..." // for example
 
 <Pocketbase
-    serverURL={serverURL}
-    initialCollections={collections}
-    credentials={credentials}>
+      serverURL={serverURL}
+      initialCollections={collections}
+      webRedirectURL={webRedirectURL}
+      mobileRedirectURL={mobileRedirectURL}
+      openURL={async (url) => {
+        // for example expo WebBrowser
+        await WebBrowser.openBrowserAsync(url);
+      }}>
     <APP />
 </Pocketbase>
 ```
@@ -125,6 +128,53 @@ DELETE
 const id = "SOME_ID";
 actions.delete(id);
 ```
+
+### Auth
+```tsx
+const { actions } = useAuth()
+```
+
+Register with Email <a name="subscribe"></a>
+```tsx
+await actions.registerWithEmail(email: string, password: string);
+```
+Sign-In with Email
+```tsx
+await actions.signInWithEmail(email: string, password: string);
+```
+Sign-In with Provider
+```tsx
+await actions.signInWithProvider(provider: string);
+```
+Submit Provider Result 
+```tsx
+await actions.submitProviderResult(url: string);
+```
+Sign-Out
+```tsx
+actions.signOut();
+```
+Send password reset email
+```tsx
+await actions.sendPasswordResetEmail(email: string);
+```
+Send email verification
+```tsx
+await actions.sendEmailVerification(email: string);
+```
+Update profile
+```tsx
+await actions.updateProfile(id: string, record: {});
+```
+Update profile
+```tsx
+await actions.updateEmail(email: string);
+```
+Delete user
+```tsx
+await actions.deleteUser(id: string);
+```
+
 
 ## Development
 
