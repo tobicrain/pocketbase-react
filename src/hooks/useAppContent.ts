@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import * as store from '../store';
 import { ContentContext } from '../context';
 import { Record } from '../interfaces/Record';
@@ -22,23 +22,30 @@ export interface Actions {
 export function useAppContent<T extends Record>(
   collectionName: string,
   initialFetch: boolean = false
-): {records: T[], actions: Actions} {
+): {records: T[], actions: Actions, isSubscribed: boolean} {
   const records = (store.useAppSelector((state) => state.reducer.records[collectionName]) ?? []) as T[];
   const context = useContext(ContentContext);
 
   useEffect(() => {
     if (initialFetch) {
-      context?.fetch(collectionName);
+      context.actions.fetch(collectionName);
     }
   }, [collectionName, initialFetch]);
 
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  useEffect(() => {
+    setIsSubscribed(context.subscribed.includes(collectionName));
+  }, [collectionName, context.subscribed])
+  
+
   const actions: Actions = {
-    subscribe: async () => await context?.subscribe(collectionName),
-    unsubscribe: () => context?.unsubscribe(collectionName),
-    fetch: async () => await context?.fetch(collectionName),
-    create: async (record: {}) => await context?.create(collectionName, record),
-    update: async (id: string, record: {}) => await context?.update(collectionName, id, record),
-    delete: async (id: string) => await context?.delete(collectionName, id),
+    subscribe: async () => await context.actions.subscribe(collectionName),
+    unsubscribe: () => context.actions.unsubscribe(collectionName),
+    fetch: async () => await context.actions.fetch(collectionName),
+    create: async (record: {}) => await context.actions.create(collectionName, record),
+    update: async (id: string, record: {}) => await context.actions.update(collectionName, id, record),
+    delete: async (id: string) => await context.actions.delete(collectionName, id),
   };
-  return { records, actions };
+  return { records, actions, isSubscribed };
 }

@@ -21,7 +21,12 @@ interface ContentActions {
   delete: DeleteType;
 }
 
-export const ContentContext = createContext<ContentActions | null>(null);
+interface ContentContext {
+  actions: ContentActions;
+  subscribed: string[];
+}
+
+export const ContentContext = createContext<ContentContext>({} as ContentContext);
 
 export type ContentProviderProps = {
   children: React.ReactNode;
@@ -37,6 +42,7 @@ export const ContentProvider = (props: ContentProviderProps) => {
   const client = useClientContext();
   const dispatch = store.useAppDispatch;
   const [collections, _] = React.useState<string[]>(props.collections || []);
+  const [subscribed, setSubscribed] = React.useState<string[]>([]);
 
   const actions: ContentActions = {
     subscribe: async (collectionName: string) => {
@@ -54,13 +60,25 @@ export const ContentProvider = (props: ContentProviderProps) => {
           default:
             break;
         }
-      }).catch((_error) => {});
+      })
+      .then(() => {
+        setSubscribed([...subscribed, collectionName]);
+      })
+      .catch((_error) => {});
     },
     unsubscribe: (collectionName?: string) => {
       if (collectionName) {
-        client?.realtime.unsubscribe(collectionName).catch((_error) => {});;
+        client?.realtime.unsubscribe(collectionName)
+        .then(() => {
+          setSubscribed(subscribed.filter((name) => name !== collectionName));
+        })
+        .catch((_error) => {});
       } else {
-        client?.realtime.unsubscribe().catch((_error) => {});;
+        client?.realtime.unsubscribe()
+        .then(() => {
+          setSubscribed([]);
+        })
+        .catch((_error) => {});
       }
     },
     fetch: async (collectionName: string) => {
@@ -89,6 +107,9 @@ export const ContentProvider = (props: ContentProviderProps) => {
   }, [collections]);
 
   return (
-    <ContentContext.Provider value={actions}>{props.children}</ContentContext.Provider>
+    <ContentContext.Provider value={{
+      actions,
+      subscribed,
+    }}>{props.children}</ContentContext.Provider>
   );
 };
