@@ -37,7 +37,7 @@ export interface AuthActions {
   deleteUser: DeleteUserType;
 }
 
-export const AuthContext = createContext<AuthActions | null>(null);
+export const AuthContext = createContext<AuthActions>({} as AuthActions);
 
 export type AuthProviderProps = {
   children: React.ReactNode;

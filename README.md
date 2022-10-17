@@ -69,7 +69,7 @@ const mobileRedirectURL = "expo://..." // for example
 
 ## Caveats
 ```tsx
-import { useAppContent } = "pocketbase-react";
+import { useAppContent, useAuth } from "pocketbase-react";
 ```
 ### Records
 Reading the records value directly accesses the Redux Store.
