@@ -174,16 +174,3 @@ Delete user
 ```tsx
 await actions.deleteUser(id: string);
 ```
-
-
-## Development
-
-By using
-```sh
-npm run build
-# or
-yarn build
-```
-You will get a folder called dist, which you can use to replace node_modules/pocketbase-react/dist in your React project.
-
-***Maybe someone finds a better way to integrate the package in development with a project***
