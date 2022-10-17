@@ -66,7 +66,6 @@ export const AuthProvider = (props: AuthProviderProps) => {
         typeof document !== 'undefined' ? props.webRedirectUrl : props.mobileRedirectUrl;
       const url = authProvider?.authUrl + redirectURL;
       await StorageService.set('provider', JSON.stringify(authProviders));
-      console.log(authProviders);
       await props.openURL(url);
     },
     submitProviderResult: async (url: string) => {
