@@ -28,8 +28,8 @@ Trace:
 
 npm manifest: 
   {
-    "name": "pocketbase-react",
-    "version": "0.1.23",
+    "name": "pocketbase-reactjs",
+    "version": "0.3.3",
     "description": "Unofficial React SDK (React, React Native, Expo) for interacting with the PocketBase JS SDK",
     "keywords": [
       "pocketbase",

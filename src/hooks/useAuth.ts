@@ -6,14 +6,14 @@ import { useClientContext } from './useClientContext';
 
 export interface AuthContextInterface {
   actions: AuthActions;
-  isSignedIn: boolean;
+  isSignedIn: boolean | null;
   user: User | Admin | null;
 }
 
 export function useAuth(): AuthContextInterface {
   const client = useClientContext();
   const actions = useContext(AuthContext);
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState<boolean | null>(null);
   const [user, setUser] = useState<User | Admin | null>(null);
 
   function updateAuth() {
