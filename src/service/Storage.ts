@@ -7,13 +7,13 @@ export class StorageService {
   };
 
   static async get(key: string): Promise<string | null> {
-    return typeof document !== 'undefined'
+    return typeof window !== 'undefined'
       ? localStorage.getItem(key)
       : await AsyncStorage.getItem(key);
   }
 
   static async set(key: string, value: string): Promise<void> {
-    if (typeof document !== 'undefined') {
+    if (typeof window !== 'undefined') {
       return localStorage.setItem(key, value);
     } else {
       return await AsyncStorage.setItem(key, value);
@@ -21,7 +21,7 @@ export class StorageService {
   }
 
   static async remove(key: string): Promise<void> {
-    if (typeof document !== 'undefined') {
+    if (typeof window !== 'undefined') {
       return localStorage.removeItem(key);
     } else {
       return await AsyncStorage.removeItem(key);

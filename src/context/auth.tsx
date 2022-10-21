@@ -63,7 +63,7 @@ export const AuthProvider = (props: AuthProviderProps) => {
     signInWithProvider: async (provider: string) => {
       const authProvider = authProviders?.find((p) => p.name === provider);
       const redirectURL =
-        typeof document !== 'undefined' ? props.webRedirectUrl : props.mobileRedirectUrl;
+        typeof window !== 'undefined' ? props.webRedirectUrl : props.mobileRedirectUrl;
       const url = authProvider?.authUrl + redirectURL;
       await StorageService.set('provider', JSON.stringify(authProviders));
       await props.openURL(url);
@@ -81,7 +81,7 @@ export const AuthProvider = (props: AuthProviderProps) => {
             authProvider.name,
             code,
             authProvider.codeVerifier,
-            typeof document !== 'undefined' ? props.webRedirectUrl : props.mobileRedirectUrl
+            typeof window !== 'undefined' ? props.webRedirectUrl : props.mobileRedirectUrl
           );
         }
       }
