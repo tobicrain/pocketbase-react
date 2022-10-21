@@ -1,16 +1,14 @@
 import { useContext, useEffect, useState } from 'react';
-import * as store from '../store';
 import { ContentContext } from '../context';
 import { Record } from '../interfaces/Record';
-import { StorageService } from '../service/Storage';
 import { useAppSelector } from '../store';
 
 export type SubscribeType = () => Promise<void | undefined>;
 export type UnsubscribeType = () => Promise<void | undefined>;
 export type FetchType = () => Promise<void | undefined>;
-export type CreateType = (record: {}) => Promise<void | undefined>;
-export type UpdateType = (id: string, record: {}) => Promise<void | undefined>;
-export type DeleteType = (id: string) => Promise<void | undefined>;
+export type CreateType = (record: {}) => Promise<void | Record | undefined>;
+export type UpdateType = (id: string, record: {}) => Promise<void | Record | undefined>;
+export type DeleteType = (id: string) => Promise<void | boolean | undefined>;
 
 export interface Actions {
   subscribe: SubscribeType;
