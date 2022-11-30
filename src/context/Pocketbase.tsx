@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { createContext, useEffect } from 'react';
-import PocketBase, { Admin, BaseAuthStore, LocalAuthStore, User } from '@tobicrain/pocketbase';
+import PocketBase from 'pocketbase';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from '../store/store';

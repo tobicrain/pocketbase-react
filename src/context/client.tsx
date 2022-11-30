@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { createContext } from 'react';
-import PocketBase from '@tobicrain/pocketbase';
+import PocketBase from 'pocketbase';
 
 export const ClientContext = createContext<PocketBase | null>(null);
 

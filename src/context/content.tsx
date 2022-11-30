@@ -90,21 +90,31 @@ export const ContentProvider = (props: ContentProviderProps) => {
       }
     },
     fetch: async (collectionName: string) => {
-      await client?.records
-        .getFullList(collectionName, 200)
+      await client
+        ?.collection(collectionName)
+        .getFullList(200)
         .then((records) => {
           dispatch(recordsAction.setRecords(collectionName, records as Record[]));
         })
         .catch(tempErrorHandler);
     },
     create: async (collectionName: string, record: {}) => {
-      return await client?.records.create(collectionName, record).catch(tempErrorHandler);
+      return await client
+        ?.collection(collectionName)
+        .create(record)
+        .catch(tempErrorHandler);
     },
     update: async (collectionName: string, recordId: string, record: {}) => {
-      return await client?.records.update(collectionName, recordId, record).catch(tempErrorHandler);
+      return await client
+        ?.collection(collectionName)
+        .update(recordId, record)
+        .catch(tempErrorHandler);
     },
     delete: async (collectionName: string, recordId: string) => {
-      return await client?.records.delete(collectionName, recordId).catch(tempErrorHandler);
+      return await client
+        ?.collection(collectionName)
+        .delete(recordId)
+        .catch(tempErrorHandler);
     },
   };
 

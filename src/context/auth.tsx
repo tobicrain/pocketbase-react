@@ -1,3 +1,4 @@
+import { Collection } from 'pocketbase';
 import * as React from 'react';
 import { createContext } from 'react';
 import { useClientContext } from '../hooks/useClientContext';
@@ -51,14 +52,14 @@ export const AuthProvider = (props: AuthProviderProps) => {
 
   const actions: AuthActions = {
     registerWithEmail: async (email, password) => {
-      await client?.users.create({
+      await client?.collection('users').create({
         email: email,
         password: password,
         passwordConfirm: password,
       });
     },
     signInWithEmail: async (email: string, password: string) => {
-      await client?.users.authViaEmail(email, password);
+      await client?.collection('users').authWithPassword(email, password);
     },
     signInWithProvider: async (provider: string) => {
       const authProvider = authProviders?.find((p) => p.name === provider);
@@ -77,12 +78,14 @@ export const AuthProvider = (props: AuthProviderProps) => {
         const providers = JSON.parse(providersString) as AuthProviderInfo[];
         const authProvider = providers?.find((p) => p.state === state);
         if (authProvider && code) {
-          await client?.users.authViaOAuth2(
-            authProvider.name,
-            code,
-            authProvider.codeVerifier,
-            typeof document !== 'undefined' ? props.webRedirectUrl : props.mobileRedirectUrl
-          );
+          await client
+            ?.collection('users')
+            .authWithOAuth2(
+              authProvider.name,
+              code,
+              authProvider.codeVerifier,
+              typeof document !== 'undefined' ? props.webRedirectUrl : props.mobileRedirectUrl
+            );
         }
       }
     },
@@ -90,25 +93,25 @@ export const AuthProvider = (props: AuthProviderProps) => {
       client?.authStore.clear();
     },
     sendPasswordResetEmail: async (email: string) => {
-      await client?.users.requestPasswordReset(email);
+      await client?.collection('users').requestPasswordReset(email);
     },
     sendEmailVerification: async (email: string) => {
-      await client?.users.requestVerification(email);
+      await client?.collection('users').requestVerification(email);
     },
     updateProfile: async (id: string, record: {}) => {
-      await client?.records.update('profiles', id, record);
+      await client?.collection('profiles').update(id, record);
     },
     updateEmail: async (email: string) => {
-      await client?.users.requestEmailChange(email);
+      await client?.collection('users').requestEmailChange(email);
     },
     deleteUser: async (id: string) => {
-      await client?.users.delete(id);
+      await client?.collection('users').delete(id);
     },
   };
 
   React.useEffect(() => {
     (async () => {
-      const methods = await client?.users.listAuthMethods();
+      const methods = await client?.collection('users').listAuthMethods();
       setAuthProviders(methods?.authProviders);
     })();
   }, [props.webRedirectUrl, props.mobileRedirectUrl]);
