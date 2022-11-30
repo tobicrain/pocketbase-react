@@ -1,6 +1,6 @@
 {
   "name": "pocketbase-react",
-  "version": "0.1.27",
+  "version": "0.1.28",
   "description": "Unofficial React SDK (React, React Native, Expo) for interacting with the PocketBase JS SDK",
   "keywords": [
     "pocketbase",
@@ -45,7 +45,7 @@
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
-    "pocketbase": "^0.8.1"
+    "pocketbase": "0.8.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",
@@ -68,7 +68,7 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.17.10",
     "@reduxjs/toolkit": "^1.8.5",
-    "pocketbase": "^0.8.1",
+    "pocketbase": "0.8.1",
     "react-redux": "^8.0.4",
     "redux": "^4.2.0",
     "redux-persist": "^6.0.0"
