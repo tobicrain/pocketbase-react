@@ -1,17 +1,9 @@
-import { Collection } from 'pocketbase';
 import * as React from 'react';
 import { createContext } from 'react';
 import { useClientContext } from '../hooks/useClientContext';
 import { StorageService } from '../service/Storage';
+import { AuthProviderInfo } from 'pocketbase';
 
-export type AuthProviderInfo = {
-  name: string;
-  state: string;
-  codeVerifier: string;
-  codeChallenge: string;
-  codeChallengeMethod: string;
-  authUrl: string;
-};
 
 export type RegisterWithEmailType = (email: string, password: string) => Promise<void>;
 export type SignInWithEmailType = (email: string, password: string) => Promise<void>;
@@ -65,7 +57,7 @@ export const AuthProvider = (props: AuthProviderProps) => {
       const authProvider = authProviders?.find((p) => p.name === provider);
       const redirectURL =
         typeof document !== 'undefined' ? props.webRedirectUrl : props.mobileRedirectUrl;
-      const url = authProvider?.authUrl + redirectURL;
+      const url = authProvider?.authURL + redirectURL;
       await StorageService.set('provider', JSON.stringify(authProviders));
       await props.openURL(url);
     },
@@ -80,7 +72,7 @@ export const AuthProvider = (props: AuthProviderProps) => {
         if (authProvider && code) {
           await client
             ?.collection('users')
-            .authWithOAuth2(
+            .authWithOAuth2Code(
               authProvider.name,
               code,
               authProvider.codeVerifier,
@@ -112,7 +104,7 @@ export const AuthProvider = (props: AuthProviderProps) => {
   React.useEffect(() => {
     (async () => {
       const methods = await client?.collection('users').listAuthMethods();
-      setAuthProviders(methods?.authProviders);
+      setAuthProviders(methods?.oauth2?.providers ?? []);
     })();
   }, [props.webRedirectUrl, props.mobileRedirectUrl]);
 
